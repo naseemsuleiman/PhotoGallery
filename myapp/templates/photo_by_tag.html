@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Photos tagged with "{{ tag }}"</h1>
+  <div class="photo-gallery">
+    {% for photo in photos %}
+      <div class="photo-item">
+        <h2>{{ photo.title }}</h2>
+        <img src="{{ photo.image.url }}" alt="{{ photo.title }}">
+        <p>{{ photo.description }}</p>
+        
+        <a href="{% url 'photo_detail' photo.id %}">View Details</a>
+      </div>
+    {% endfor %}
+  </div>
+{% endblock %}

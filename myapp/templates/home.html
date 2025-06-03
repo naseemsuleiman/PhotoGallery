@@ -1,0 +1,141 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-12">
+  <!-- Hero Section with Animation -->
+  <div class="text-center mb-16 animate-fade-in">
+    <h1 class="text-5xl md:text-6xl font-light text-gray-800 mb-4">Photo Gallery</h1>
+    <p class="text-xl text-gray-500 max-w-2xl mx-auto">Discover beautiful moments captured through our lens</p>
+    
+   
+      
+      
+
+  <!-- Gallery Grid with Masonry Layout -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 auto-rows-fr">
+    {% for photo in latest_photos %}
+      <div class="group relative overflow-hidden rounded-xl bg-white shadow-sm hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
+        <!-- Image Container -->
+        <div class="aspect-w-4 aspect-h-3 bg-gray-50 relative">
+          <img 
+            src="{{ photo.image.url }}" 
+            alt="{{ photo.title }}"
+            class="object-cover w-full h-full transition-all duration-500 group-hover:scale-105"
+            loading="lazy"
+          >
+          
+          <!-- Quick Action Buttons -->
+          <div class="absolute top-3 right-3 flex space-x-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            <button class="bg-white/80 backdrop-blur-sm p-2 rounded-full hover:bg-white transition-colors shadow-sm">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+              </svg>
+            </button>
+            <button class="bg-white/80 backdrop-blur-sm p-2 rounded-full hover:bg-white transition-colors shadow-sm">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+        
+        <!-- Overlay Content -->
+        <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+          <div class="text-white transform translate-y-3 group-hover:translate-y-0 transition-transform duration-300 w-full">
+            <div class="flex justify-between items-start">
+              <div>
+                <h3 class="font-medium text-lg">{{ photo.title }}</h3>
+                <p class="text-sm text-gray-200 line-clamp-1">{{ photo.description|default:"" }}</p>
+              </div>
+              <span class="text-xs bg-white/20 backdrop-blur-sm px-2 py-1 rounded-full">
+                {{ photo.created_at|date:"M d, Y" }}
+              </span>
+            </div>
+            
+            <div class="flex items-center mt-3 space-x-4 text-sm">
+              <span class="flex items-center space-x-1">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                </svg>
+                <span>{{ photo.total_likes }}</span>
+              </span>
+              
+              <span class="flex items-center space-x-1">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                </svg>
+                <span>{{ photo.comments.count }}</span>
+              </span>
+              
+              <span class="flex items-center space-x-1 ml-auto">
+                
+                
+              </span>
+            </div>
+            
+            {% if photo.tags.all %}
+              <div class="mt-2 flex flex-wrap gap-1">
+                {% for tag in photo.tags.all %}
+                  <span class="text-xs bg-white/20 backdrop-blur-sm px-2 py-1 rounded-full">
+                    #{{ tag.name }}
+                  </span>
+                {% endfor %}
+              </div>
+            {% endif %}
+          </div>
+        </div>
+        
+        <!-- Clickable Link -->
+        <a href="{% url 'photo_detail' photo.id %}" class="absolute inset-0 z-10" aria-label="View {{ photo.title }}"></a>
+      </div>
+      
+    {% empty %}
+      <div class="col-span-full text-center py-16">
+        <div class="max-w-md mx-auto">
+          <svg class="mx-auto h-16 w-16 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+          <h3 class="mt-4 text-lg font-medium text-gray-900">No photos yet</h3>
+          <p class="mt-1 text-gray-500">Get started by uploading your first image.</p>
+          <button class="mt-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
+            Upload Photo
+          </button>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+  
+ 
+
+<style>
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  .animate-fade-in {
+    animation: fadeIn 0.6s ease-out forwards;
+  }
+  
+  .aspect-w-4.aspect-h-3 {
+    position: relative;
+    padding-bottom: 75%; /* 4:3 aspect ratio */
+  }
+  .aspect-w-4.aspect-h-3 > img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .shadow-xs {
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  }
+  
+  .auto-rows-fr {
+    grid-auto-rows: minmax(0, 1fr);
+  }
+</style>
+{% endblock %}
